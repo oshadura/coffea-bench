@@ -1,0 +1,3 @@
+global-exclude .git*
+global-exclude .pytest_cache
+global-exclude .DS_Store
