@@ -1,17 +1,38 @@
 import pytest
 import pyspark.sql
+import glob
+import re
 
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.0")]
-files = [("samples/small-flat-tree.root", "samples/hepdata-example.root")]
+files = [f for f in glob.glob("samples/*.root")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+
+class RegexSwitch(object):
+  def __init__(self):
+    self.last_match = None
+  def match(self,pattern,text):
+    self.last_match = re.match(pattern,text)
+    return self.last_match
+  def search(self,pattern,text):
+    self.last_match = re.search(pattern,text)
+    return self.last_match
 
 def laurelin_read_simple_flat_tree(laurelin_version, file):
+    gre = RegexSwitch()
     spark = pyspark.sql.SparkSession.builder \
         .master("local[1]") \
         .config('spark.jars.packages', laurelin_version) \
         .getOrCreate()
     sc = spark.sparkContext
+    if gre.match(r'sample',file):
+        treename = "sample"
+    elif gre.match(r'HZZ-objects',file):
+        treename = "events"
+    elif gre.match(r'Zmumu',file):
+        treename = "events"
+    else:
+        treename = "tree"
     df = spark.read.format('edu.vanderbilt.accre.laurelin.Root') \
-            .option("tree", "tree") \
+            .option("tree", treename) \
             .load(files)
     df.printSchema()
 
