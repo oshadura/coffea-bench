@@ -25,9 +25,7 @@ def laurelin_read_simple_flat_tree(laurelin_version, file):
     sc = spark.sparkContext
     if gre.match(r'sample',file):
         treename = "sample"
-    elif gre.match(r'HZZ-objects',file):
-        treename = "events"
-    elif gre.match(r'Zmumu',file):
+    elif gre.match(r'HZZ-objects',file) or gre.match(r'Zmumu',file):
         treename = "events"
     else:
         treename = "tree"
