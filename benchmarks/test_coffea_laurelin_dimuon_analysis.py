@@ -21,7 +21,7 @@ fileset = {
                     'treename': 'Events'
                   }
 }
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
 
 # Look at ProcessorABC documentation to see the expected methods and what they are supposed to do
 class DimuonProcessor(processor.ProcessorABC):
@@ -74,7 +74,7 @@ def spark_session_startup():
         .config('spark.sql.execution.arrow.enabled','true') \
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', 200000)
     spark = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='0.5.2-SNAPSHOT')
+                          spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
     return spark
 
 def coffea_laurelin_dimuon_analysis(laurelin_version, fileset, spark):
@@ -86,9 +86,11 @@ def coffea_laurelin_dimuon_analysis(laurelin_version, fileset, spark):
                                      thread_workers=thread_workers,
                                      executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
 
+@pytest.mark.skip(reason="Dataset is too big! no way of currently testing this...")
 @pytest.mark.benchmark(group="coffea-laurelin-dimuon-analysis")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 @pytest.mark.parametrize("root_file", fileset)
+
 def test_coffea_laurelin_dimuon_analysis(benchmark, laurelin_version, root_file):
     spark = spark_session_startup()
     benchmark(coffea_laurelin_dimuon_analysis, laurelin_version, fileset, spark)

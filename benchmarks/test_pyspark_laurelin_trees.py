@@ -4,7 +4,7 @@ import glob
 import re
 
 files = [f for f in glob.glob("samples/*.root")]
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
 
 class RegexSwitch(object):
   def __init__(self):

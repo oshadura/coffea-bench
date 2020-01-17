@@ -14,8 +14,7 @@ partitionsize = 200000
 thread_workers = 2
 
 fileset = {
-    'MET': { 'files': ['/home/oksana/CERN_sources/coffea-benchmarks/benchmarks/data/Run2012B_SingleMu.root'],
-        #'Jets': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
+    'Jets': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
              'treename': 'Events'
             }
 }
@@ -23,7 +22,7 @@ fileset = {
 #fileset = {'MET': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root']}
 
 # parameters to be changed
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
 
 # This program plots an event-level variable (in this case, MET, but switching it is as easy as a dict-key change). It also demonstrates an easy use of the book-keeping cutflow tool, to keep track of the number of events processed.
 # The processor class bundles our data analysis together while giving us some helpful tools.  It also leaves looping and chunks to the framework instead of us.
@@ -72,12 +71,13 @@ def coffea_laurelin_adl_example1(laurelin_version, fileset):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', 200000)
 
     spark = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='0.5.2-SNAPSHOT')
+                          spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
     
     output = processor.run_spark_job(fileset, METProcessor(), spark_executor, 
                             spark=spark, partitionsize=partitionsize, thread_workers=thread_workers,
                             executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
 
+@pytest.mark.skip(reason="Dataset is too big! no way of currently testing this...")
 @pytest.mark.benchmark(group="coffea-laurelin-adl-example1")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 @pytest.mark.parametrize("root_file", fileset)

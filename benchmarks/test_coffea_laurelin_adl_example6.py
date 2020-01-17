@@ -16,19 +16,18 @@ partitionsize = 200000
 thread_workers = 1
 
 fileset = {
-    'Trijets': { 'files': ['/home/oksana/CERN_sources/coffea-benchmarks/benchmarks/data/Run2012B_SingleMu.root'],
-        #'Trijets': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
+    'Trijets': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
              'treename': 'Events'
             }
 }
 
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
 
 # This program plots the pT of the trijet system in each event with mass closest to 172.5, as well as the maximum b-tag among the three plotted jets.
 
 class TrijetProcessor(processor.ProcessorABC):
     def __init__(self):
-        self._columns = ['nJet', 'Jet_pt', 'Jet_eta', 'Jet_phi', 'Jet_mass', 'Jet_btag']
+        self._columns = ['MET_pt', 'nJet', 'Jet_pt', 'Jet_eta', 'Jet_phi', 'Jet_mass', 'Jet_btag']
         dataset_axis = hist.Cat("dataset", "")
         Jet_axis = hist.Bin("Jet_pt", "Jet [GeV]", 50, 15, 200)
         b_tag_axis = hist.Bin("b_tag", "b-tagging discriminant", 50, 0, 1)
@@ -99,7 +98,7 @@ def coffea_laurelin_adl_example6(laurelin_version, fileset):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', 200000)
 
     spark = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='0.5.2-SNAPSHOT')
+                          spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
     
     output = processor.run_spark_job(fileset,
                                      TrijetProcessor(),
@@ -109,7 +108,7 @@ def coffea_laurelin_adl_example6(laurelin_version, fileset):
                                      thread_workers=thread_workers,
                                      executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
 
-
+@pytest.mark.skip(reason="Dataset is too big! no way of currently testing this...")
 @pytest.mark.benchmark(group="coffea-laurelin-adl-example6")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 @pytest.mark.parametrize("root_file", fileset)

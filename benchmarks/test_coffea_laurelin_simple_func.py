@@ -20,39 +20,51 @@ import pickle as pkl
 import lz4.frame as lz4f
 
 
-file = {'test': ['file:///home/oksana/CERN_sources/examples-spark-ttree/nano_lgray.root']}
-#'root://eospublic.cern.ch//eos/user/o/oshadura/coffea/nano_lgray.root'
+#file = {'test': ['root://eospublic.cern.ch//eos/user/o/oshadura/coffea/nano_lgray.root']}
 
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+file = {
+    'test': { 'files': ['root://eosuser//eos/user/o/oshadura/coffea/nano_lgray.root'],
+             'treename': 'Events'
+            }
+}
+
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
     
 def spark_session_startup():
     spark_config = pyspark.sql.SparkSession.builder \
-        .appName('spark-executor-test-%s' % guid()) \
+        .appName('spark-executor-test') \
         .master('local[*]') \
         .config('spark.driver.memory', '4g') \
         .config('spark.executor.memory', '4g') \
         .config('spark.sql.execution.arrow.enabled','true') \
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', 200000)
     spark_session = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='0.5.2-SNAPSHOT')
+                          spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
     return spark_session
 
-def laurelin_read_loading(laurelin_version, file, treename, spark_session):
-    df = spark_session.read.format('root') \
+def laurelin_read_loading(laurelin_version, file):
+    spark_session = spark_session_startup()
+    df = spark_session.read.format('edu.vanderbilt.accre.laurelin.Root') \
             .option("tree", "Events") \
             .load(file['test'])
     df.printSchema()
+    return df
     
-def laurelin_read_select(laurelin_version, file, treename, df):
-    df = df.select(*['nMuon','Muon_pt','Muon_eta','Muon_phi','Muon_mass'])
+def laurelin_read_select(laurelin_version, file):
+    spark_session = spark_session_startup()
+    df = laurelin_read_loading(laurelin_version, file)
+    df_final = df.select(*['nMuon','Muon_pt','Muon_eta','Muon_phi','Muon_mass'])
+    df_final.printSchema()
     
-def laurelin_read_show(laurelin_version, file, treename, df):
-    df = df.withColumn('dataset', fn.lit('test'))
+def laurelin_read_show(laurelin_version, file):
+    spark_session = spark_session_startup()
+    df = laurelin_read_loading(laurelin_version, file)
+    df_final = df.withColumn('dataset', fn.lit('test'))
+    df_final.printSchema()
     
-def laurelin_read_show(laurelin_version, file, treename, df):
-    df = df.withColumn('dataset', fn.lit('test'))
-    
-def laurelin_simple_test(laurelin_version, file, treename, df):
+def laurelin_simple_test(laurelin_version, file):
+    spark_session = spark_session_startup()
+    df = laurelin_read_loading(laurelin_version, file)
     env = Environment(loader=PackageLoader('coffea.processor',
                                            'templates'),
                       autoescape=select_autoescape(['py']))
@@ -65,31 +77,32 @@ def laurelin_simple_test(laurelin_version, file, treename, df):
     histdf = df.select(coffea_udf(*cols_w_ds).alias('histos'))
     pds = histdf.toPandas()
     print(pds)
+    
+@pytest.mark.benchmark(group="laurelin-simple-startup")
+def test_spark_session_startup(benchmark):
+    benchmark(spark_session_startup)
 
+@pytest.mark.skip(reason="No way of currently testing this...")
 @pytest.mark.benchmark(group="laurelin-simple-func")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 def test_laurelin_read_loading(benchmark, laurelin_version):
-    spark_session = spark_session_startup()
-    benchmark(laurelin_read_loading, laurelin_version, file, spark_session)
-    
+    benchmark(laurelin_read_loading, laurelin_version, file)
+ 
+@pytest.mark.skip(reason="No way of currently testing this...")    
 @pytest.mark.benchmark(group="laurelin-simple-func")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 def test_laurelin_read_select(benchmark, laurelin_version):
-    spark_session = spark_session_startup()
-    df = laurelin_read_loading(laurelin_version, file, spark_session)
-    benchmark(laurelin_read_select, laurelin_version, file, df)
+    benchmark(laurelin_read_select, laurelin_version, file)
 
+@pytest.mark.skip(reason="No way of currently testing this...")
 @pytest.mark.benchmark(group="laurelin-simple-func")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 def test_laurelin_read_show(benchmark, laurelin_version):
-    spark_session = spark_session_startup()
-    df = laurelin_read_loading(laurelin_version, file, spark_session)
-    benchmark(laurelin_read_show, laurelin_version, file, df)
-    
+    benchmark(laurelin_read_show, laurelin_version, file)
+
+@pytest.mark.skip(reason="No way of currently testing this...")    
 @pytest.mark.benchmark(group="laurelin-simple-func")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 def test_laurelin_simple_test(benchmark, laurelin_version):
-    spark_session = spark_session_startup()
-    df = laurelin_read_loading(laurelin_version, file, spark_session)
-    benchmark(laurelin_simple_test, laurelin_version, file,  df)
+    benchmark(laurelin_simple_test, laurelin_version, file)
 

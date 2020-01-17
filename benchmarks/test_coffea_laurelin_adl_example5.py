@@ -14,19 +14,18 @@ partitionsize = 200000
 thread_workers = 1
 
 fileset = {
-    'MET Masked by Muons': { 'files': ['/home/oksana/CERN_sources/coffea-benchmarks/benchmarks/data/Run2012B_SingleMu.root'],
-        #'MET Masked by Muons': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
+    'MET Masked by Muons': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
              'treename': 'Events'
             }
 }
 
 # parameters to be changed
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
 
 # This program will plot the MET for events which have an opposite-sign muon pair that has mass in the range of 60-120 GeV.
 class METMuonProcessor(processor.ProcessorABC):
     def __init__(self):
-        self._columns = ['nMuon', 'Muon_pt', 'Muon_eta', 'Muon_phi', 'Muon_mass', 'Muon_charge']
+        self._columns = ['MET_pt', 'nMuon', 'Muon_pt', 'Muon_eta', 'Muon_phi', 'Muon_mass', 'Muon_charge']
         dataset_axis = hist.Cat("dataset", "")
         muon_axis = hist.Bin("MET", "MET [GeV]", 50, 1, 100)
         self._accumulator = processor.dict_accumulator({
@@ -85,7 +84,7 @@ def coffea_laurelin_adl_example5(laurelin_version, fileset):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', 200000)
 
     spark = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='0.5.2-SNAPSHOT')
+                          spark_progress=False, _version='1.0.1-SNAPSHOT')
     
     output = processor.run_spark_job(fileset,
                                      METMuonProcessor(),
@@ -96,6 +95,7 @@ def coffea_laurelin_adl_example5(laurelin_version, fileset):
                                      executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
 
 
+@pytest.mark.skip(reason="Dataset is too big! no way of currently testing this...")
 @pytest.mark.benchmark(group="coffea-laurelin-adl-example5")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 @pytest.mark.parametrize("root_file", fileset)

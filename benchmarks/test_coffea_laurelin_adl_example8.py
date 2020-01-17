@@ -18,13 +18,12 @@ partitionsize = 200000
 thread_workers = 1
 
 fileset = {
-    'massT': { 'files': ['/home/oksana/CERN_sources/coffea-benchmarks/benchmarks/data/Run2012B_SingleMu.root'],
-        #'massT': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
+    'massT': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
              'treename': 'Events'
             }
 }
 
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:0.5.2-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
 
 @nb.njit()
 def trilepton_selection(ee_starts, ee_stops, ee_arg0s, ee_arg1s,
@@ -133,7 +132,7 @@ import math
 
 class DibosonProcessor(processor.ProcessorABC):
     def __init__(self):
-        self._columns = ['nMuon', 'Muon_pt', 'Muon_eta', 'Muon_phi', 'Muon_mass', 'Muon_charge', 
+        self._columns = ['MET_pt', 'nMuon', 'Muon_pt', 'Muon_eta', 'Muon_phi', 'Muon_mass', 'Muon_charge', 
                          'nElectron', 'Electron_pt', 'Electron_eta', 'Electron_phi', 'Electron_mass', 'Electron_charge']
         dataset_axis = hist.Cat("dataset", "MET and Third Lepton")
         muon_axis = hist.Bin("massT", "Transverse Mass", 50, 15, 250)
@@ -237,7 +236,7 @@ def coffea_laurelin_adl_example8(laurelin_version, fileset):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', 200000)
 
     spark = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='0.5.2-SNAPSHOT')
+                          spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
     
     output = processor.run_spark_job(fileset,
                                      DibosonProcessor(),
@@ -247,7 +246,7 @@ def coffea_laurelin_adl_example8(laurelin_version, fileset):
                                      thread_workers=thread_workers,
                                      executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
 
-
+@pytest.mark.skip(reason="Dataset is too big! no way of currently testing this...")
 @pytest.mark.benchmark(group="coffea-laurelin-adl-example8")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 @pytest.mark.parametrize("root_file", fileset)
