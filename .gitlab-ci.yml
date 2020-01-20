@@ -1,11 +1,18 @@
 # Configuration borrowed from https://gitlab.cern.ch/db/swan-spark-notebooks
 
-before_script:
-  - git submodule sync --recursive
-  - git submodule update --init --recursive
+.ssh: &ssh
+  before_script:
+  - mkdir -p ~/.ssh
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  - echo -e "$SSH_DEPLOY_KEY" > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
 
-#variables:
-#  GIT_SUBMODULE_STRATEGY: recursive
+#before_script:
+#  - git submodule sync --recursive
+#  - git submodule update --init --recursive
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
   - image-build
