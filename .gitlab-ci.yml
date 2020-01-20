@@ -2,14 +2,12 @@
 before_script:
   - mkdir -p ~/.ssh
   - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  - eval $(ssh-agent -s)
   - echo "$SSH_DEPLOY_KEY" | tr -d '\r' | ssh-add - > /dev/null
   - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
   - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
   - git submodule sync --recursive
   - git submodule update --init --recursive
-
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
   - image-build
