@@ -7,9 +7,10 @@
   - echo -e "$SSH_DEPLOY_KEY" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
 
-#before_script:
-#  - git submodule sync --recursive
-#  - git submodule update --init --recursive
+#
+before_script:
+  - git submodule sync --recursive
+  - git submodule update --init --recursive
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
