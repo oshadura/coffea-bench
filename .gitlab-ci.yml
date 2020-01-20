@@ -1,3 +1,12 @@
+# Configuration borrowed from https://gitlab.cern.ch/db/swan-spark-notebooks
+
+before_script:
+  - git submodule sync --recursive
+  - git submodule update --init --recursive
+
+#variables:
+#  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:
   - image-build
   - submit-prod-notebook
@@ -30,32 +39,8 @@ build-docker-image:
   image:
     name: ${CI_REGISTRY_IMAGE}:latest
     entrypoint: ["/bin/sh", "-c"]
-  after_script:
-     # schedules define NOTIFICATION_URL environment variables (send only on schedule)
-    - if [ -z $NOTIFICATION_URL ] ; then exit 0; fi
-    - if [ -e job_failed ] ; then ./libs/send_mattermost_notification.sh $NOTIFICATION_URL "SWAN NOTEBOOK FAILED - $CI_JOB_NAME\n$CI_PROJECT_URL/-/jobs/$CI_JOB_ID"; fi
   
 ### K8S ###
-
-prod-lcg96-pyrdf-notebook:
-  <<: *job_template
-  stage: submit-prod-notebook
-  script:
-    - echo "Skip due to https://its.cern.ch/jira/browse/ITHADOOP-689. Run when spark-2.4.4cern2 gets available in lcg97."
-
-lcgdev-pyrdf-notebook:
-  <<: *job_template
-  image:
-    name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
-    entrypoint: ["/bin/sh", "-c"]
-  stage: submit-test-notebook
-  script:
-    # set KUBECONFIG
-    - cp ./k8s-example/kubeconfig /tmp/kubeconfig
-    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
-    - export KUBECONFIG=/tmp/kubeconfig
-    # submit notebook
-    - python ./k8s-example/submit_k8s_swan_ipynb.py --ipynb ./k8s-example/NanoAODDimuonAnalysis-PyRDF-Spark.ipynb --cvmfs-lcg-view dev3/latest --cvmfs-lcg-platform x86_64-centos7-gcc8-opt --appid prod-lcgdev-pyrdf-notebook-$RANDOM --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
 
 docker-k8s-notebook:
   <<: *job_template
@@ -65,8 +50,8 @@ docker-k8s-notebook:
   stage: submit-test-notebook
   script:
     # set KUBECONFIG
-    - cp ./k8s-example/kubeconfig /tmp/kubeconfig
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./k8s-example/submit_k8s_dockerfile_ipynb.py --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 --ipynb ./k8s-example/spark-pi.ipynb --appid prod-docker-image-notebook-$RANDOM --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
+    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 --ipynb ./swan-spark-notebooks/k8s-example/spark-pi.ipynb --appid prod-docker-image-notebook-$RANDOM --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext

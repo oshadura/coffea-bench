@@ -1,0 +1,3 @@
+[submodule "swan-spark-notebooks"]
+  path = swan-spark-notebooks
+  url = https://gitlab.cern.ch/oshadura/swan-spark-notebooks.git
