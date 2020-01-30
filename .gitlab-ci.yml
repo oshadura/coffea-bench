@@ -60,7 +60,8 @@ submit-test-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - | 
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./swan-spark-notebooks/k8s-example/spark-pi.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -78,11 +79,12 @@ submit-adl1-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
-     --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
-     --ipynb ./benchmarks/test_coffea_laurelin_adl_example1.ipynb \
-     --appid prod-docker-image-notebook-$RANDOM \
-     --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
+    - | 
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+      --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
+      --ipynb ./benchmarks/test_coffea_laurelin_adl_example1.ipynb \
+      --appid prod-docker-image-notebook-$RANDOM \
+      --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
 
 submit-adl2-notebook:
   <<: *job_template
@@ -96,11 +98,12 @@ submit-adl2-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
-     --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
-     --ipynb ./benchmarks/test_coffea_laurelin_adl_example2.ipynb \
-     --appid prod-docker-image-notebook-$RANDOM \
-     --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
+    - | 
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+      --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
+      --ipynb ./benchmarks/test_coffea_laurelin_adl_example2.ipynb \
+      --appid prod-docker-image-notebook-$RANDOM \
+      --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
 
 submit-adl3-notebook:
   <<: *job_template
@@ -114,7 +117,8 @@ submit-adl3-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./benchmarks/test_coffea_laurelin_adl_example3.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -132,7 +136,8 @@ submit-adl4-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./benchmarks/test_coffea_laurelin_adl_example4.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -150,7 +155,8 @@ submit-adl5-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./benchmarks/test_coffea_laurelin_adl_example5.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -168,7 +174,8 @@ submit-adl6-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./benchmarks/test_coffea_laurelin_adl_example6.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -186,7 +193,8 @@ submit-adl7-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./benchmarks/test_coffea_laurelin_adl_example7.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -204,7 +212,8 @@ submit-adl8-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./sbenchmarks/test_coffea_laurelin_adl_example8.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -222,7 +231,8 @@ submit-dimuon-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./benchmarks/test_pyspark_laurelin_trees.ipynb \
       --appid prod-docker-image-notebook-$RANDOM \
@@ -240,7 +250,8 @@ submit-pyspark-trees-notebook:
     - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
-    - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
+    - |
+      python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
       --ipynb ./benchmarks/test_pyspark_laurelin_trees.py \
       --appid prod-docker-image-notebook-$RANDOM \
