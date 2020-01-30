@@ -7,7 +7,8 @@ before_script:
   - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
   - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
   - git submodule sync --recursive
-  - git submodule update --init --recursive
+# - git submodule update --init --recursive
+  - git submodule update --recursive --remote
 
 stages:
   - image-build
@@ -41,10 +42,10 @@ build-docker-image:
   image:
     name: ${CI_REGISTRY_IMAGE}:latest
     entrypoint: ["/bin/sh", "-c"]
-  
+
 ### K8S ###
 
-docker-k8s-notebook:
+docker-k8s-notebooks:
   <<: *job_template
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
