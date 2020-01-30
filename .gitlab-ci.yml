@@ -15,7 +15,8 @@ stages:
   - image-build
   - submit-test-notebook
   - submit-adl-notebook
-  - submit-pyspark
+  - submit-dimuon-notebook
+  - submit-pyspark-notebook
 
 variables:
   HADOOP_CONFEXT_QA_BRANCH: "testing"
@@ -72,7 +73,7 @@ submit-adl1-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
@@ -86,7 +87,7 @@ submit-adl2-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
@@ -100,7 +101,7 @@ submit-adl3-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
@@ -114,7 +115,7 @@ submit-adl4-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
@@ -128,7 +129,7 @@ submit-adl5-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
@@ -142,7 +143,7 @@ submit-adl6-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
@@ -156,7 +157,7 @@ submit-adl7-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
@@ -170,14 +171,14 @@ submit-adl8-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-adl
+  stage: submit-adl-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
-    --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
-    --ipynb ./sbenchmarks/test_coffea_laurelin_adl_example8.ipynb \
-    --appid prod-docker-image-notebook-$RANDOM \
-    --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
+      --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
+      --ipynb ./sbenchmarks/test_coffea_laurelin_adl_example8.ipynb \
+      --appid prod-docker-image-notebook-$RANDOM \
+      --hadoop-confext /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext
 
 submit-dimuon-notebook:
   <<: *job_template
@@ -198,7 +199,7 @@ submit-pyspark-trees-notebook:
   image:
     name: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2
     entrypoint: ["/bin/sh", "-c"]
-  stage: submit-pyspark
+  stage: submit-pyspark-notebook
   script:
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
