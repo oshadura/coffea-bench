@@ -48,11 +48,7 @@ build-docker-image:
 convert-notebooks:
   stage: .pre
   script:
-    - jupytext --to notebook  benchmarks/*.py
-    # set KUBECONFIG
-    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
-    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
-    - export KUBECONFIG=/tmp/kubeconfig
+    - print "Start!"
 
 submit-test-notebook:
   <<: *job_template
@@ -61,6 +57,10 @@ submit-test-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-test-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -75,6 +75,10 @@ submit-adl1-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
      --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -89,6 +93,10 @@ submit-adl2-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
      --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -103,6 +111,10 @@ submit-adl3-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -117,6 +129,10 @@ submit-adl4-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -131,6 +147,10 @@ submit-adl5-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -145,6 +165,10 @@ submit-adl6-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -159,6 +183,10 @@ submit-adl7-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -173,6 +201,10 @@ submit-adl8-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-adl-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -187,6 +219,10 @@ submit-dimuon-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-dimuon-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -201,6 +237,10 @@ submit-pyspark-trees-notebook:
     entrypoint: ["/bin/sh", "-c"]
   stage: submit-pyspark-notebook
   script:
+    # set KUBECONFIG
+    - cp ./swan-spark-notebooks/k8s-example/kubeconfig /tmp/kubeconfig
+    - sed -i -e "s/K8S_SSL_CERTIFICATE/$K8S_SSL_CERTIFICATE/g" /tmp/kubeconfig; sed -i -e "s,K8S_MASTER,$K8S_MASTER,g" /tmp/kubeconfig; sed -i -e "s/K8S_TOKEN/$K8S_TOKEN/g" /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
     # submit notebook
     - python ./swan-spark-notebooks/k8s-example/submit_k8s_dockerfile_ipynb.py \
       --spark-image gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.4-hadoop2 \
@@ -211,4 +251,4 @@ submit-pyspark-trees-notebook:
 collect-resuls:
   stage: .post
   script:
-    - echo "Done!"
+    - print "Done!"
