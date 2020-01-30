@@ -46,7 +46,7 @@ build-docker-image:
 convert-notebooks:
   stage: .pre
   script:
-    - print "Start!"
+    - echo "Start!"
 
 submit-test-notebook:
   <<: *job_template
@@ -249,4 +249,4 @@ submit-pyspark-trees-notebook:
 collect-resuls:
   stage: .post
   script:
-    - print "Done!"
+    - echo "Done!"
