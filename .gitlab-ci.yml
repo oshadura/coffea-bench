@@ -1,7 +1,5 @@
 # Configuration borrowed from https://gitlab.cern.ch/db/swan-spark-notebooks
 before_script:
-# Converter from .py to ipynb
-  - pip install jupytext
   - mkdir -p ~/.ssh
   - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
   - eval $(ssh-agent -s)
