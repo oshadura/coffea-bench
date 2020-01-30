@@ -7,8 +7,7 @@ before_script:
   - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
   - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
   - git submodule sync --recursive
-# - git submodule update --init --recursive
-  - git submodule update --recursive --remote
+  - git submodule update --init --recursive  --remote
 
 stages:
   - image-build
