@@ -66,12 +66,16 @@ def coffea_laurelin_adl_example1(laurelin_version, fileset):
         .appName('spark-executor-test-%s' % guid()) \
         .master('local[*]') \
         .config('spark.driver.memory', '4g') \
-        .config('spark.executor.memory', '4g') \
+        .config('spark.executor.memory', '6g') \
         .config('spark.sql.execution.arrow.enabled','true') \
-        .config('spark.sql.execution.arrow.maxRecordsPerBatch', 200000)
+        .config('spark.sql.execution.arrow.maxRecordsPerBatch', 20000)\
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
+        .config('spark.kubernetes.container.image.pullPolicy', 'true')\
+        .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
+        .config('spark.kubernetes.memoryOverheadFactor', '0.1')
 
     spark = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
+                          spark_progress=False, laurelin_version='1.0.0')
     
     output = processor.run_spark_job(fileset, METProcessor(), spark_executor, 
                             spark=spark, partitionsize=partitionsize, thread_workers=thread_workers,
