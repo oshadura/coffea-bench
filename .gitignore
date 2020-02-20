@@ -1,3 +1,7 @@
+# Benchmark artefacts
+coffea-bench.json
+*.svg
+
 # Distribution / packaging
 .Python
 build/
