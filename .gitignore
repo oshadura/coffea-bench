@@ -2,6 +2,8 @@
 coffea-bench.json
 *.svg
 
+benchmarks/__pycache__/
+
 # Distribution / packaging
 .Python
 build/
