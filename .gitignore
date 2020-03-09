@@ -1,6 +1,7 @@
 # Benchmark artefacts
-coffea-bench.json
-*.svg
+tools/*.json
+tools/*.csv
+tools/*.svg
 
 benchmarks/__pycache__/
 
