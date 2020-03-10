@@ -16,6 +16,7 @@
 # Preparation for testing
 # !pip install --user --upgrade ipytest
 # !pip install --user --upgrade pytest-benchmark
+# !pip install --user --upgrade pytest-csv
 
 # spark.jars.packages doesnt work with Spark 2.4 with kubernetes
 # !wget -N https://repo1.maven.org/maven2/edu/vanderbilt/accre/laurelin/1.0.0/laurelin-1.0.0.jar

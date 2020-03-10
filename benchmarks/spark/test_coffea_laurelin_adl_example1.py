@@ -16,6 +16,7 @@
 # Preparation for testing
 # !pip install --user --upgrade ipytest
 # !pip install --user --upgrade pytest-benchmark
+# !pip install --user --upgrade pytest-csv
 
 # spark.jars.packages doesnt work with Spark 2.4 with kubernetes
 # !wget -N https://repo1.maven.org/maven2/edu/vanderbilt/accre/laurelin/1.0.0/laurelin-1.0.0.jar
@@ -114,7 +115,7 @@ def coffea_laurelin_adl_example1(laurelin_version, n_workers, partition_size):
 @pytest.mark.benchmark(group="coffea-laurelin-adl-example1")
 @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
 @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
-@pytest.mark.parametrize("partition_size", range(20000,50000,20000))
+@pytest.mark.parametrize("partition_size", range(100000,200000,100000))
 def test_coffea_laurelin_adl_example1(benchmark, laurelin_version, n_workers, partition_size):
     benchmark(coffea_laurelin_adl_example1, available_laurelin_version, n_workers, partition_size)
 

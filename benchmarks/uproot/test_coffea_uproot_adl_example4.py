@@ -102,8 +102,8 @@ def coffea_uproot_adl_example4(n_workers, chunk_size, maxchunk_size):
 
 @pytest.mark.benchmark(group="coffea-uproot-adl-example4")
 @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
-@pytest.mark.parametrize("chunk_size", range(10000,50000,10000))
-@pytest.mark.parametrize("maxchunk_size", range(20000,50000,20000))
+@pytest.mark.parametrize("chunk_size", range(200000,600000,200000))
+@pytest.mark.parametrize("maxchunk_size", range(300000,700000,200000))
 def test_coffea_uproot_adl_example4(benchmark, n_workers, chunk_size, maxchunk_size):
     benchmark(coffea_uproot_adl_example4, n_workers, chunk_size, maxchunk_size)
 
