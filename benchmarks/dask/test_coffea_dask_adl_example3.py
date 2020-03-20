@@ -115,7 +115,7 @@ class JetProcessor(processor.ProcessorABC):
 
 
 def coffea_dask_adl_example3():
-    output = processor.run_dask_job(fileset,
+    output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = JetProcessor(),
                                       executor = processor.dask_executor,

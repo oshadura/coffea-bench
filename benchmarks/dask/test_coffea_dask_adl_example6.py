@@ -125,7 +125,7 @@ class TrijetProcessor(processor.ProcessorABC):
         return accumulator
 
 def coffea_dask_adl_example6():
-    output = processor.run_dask_job(fileset,
+    output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = TrijetProcessor(),
                                       executor = processor.dask_executor,

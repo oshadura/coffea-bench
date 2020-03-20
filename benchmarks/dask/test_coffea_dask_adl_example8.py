@@ -257,8 +257,8 @@ class DibosonProcessor(processor.ProcessorABC):
     def postprocess(self, accumulator):
         return accumulator
 
-def coffea_dask_adl_example8(n_workers, chunk_size, maxchunk_size):
-    output = processor.run_dask_job(fileset,
+def coffea_dask_adl_example8():
+    output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = DibosonProcessor(),
                                       executor = processor.dask_executor,

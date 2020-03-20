@@ -105,7 +105,7 @@ class DimuonProcessor(processor.ProcessorABC):
         return accumulator
 
 def coffea_dask_dimuon_analysis():
-    output = processor.run_dask_job(fileset,
+    output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = DimuonProcessor(),
                                       executor = processor.dask_executor,

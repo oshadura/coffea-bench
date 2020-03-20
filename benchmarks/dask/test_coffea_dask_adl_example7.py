@@ -150,7 +150,7 @@ class JetLeptonProcessor(processor.ProcessorABC):
         return accumulator
 
 def coffea_dask_adl_example7():
-    output = processor.run_dask_job(fileset,
+    output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = JetLeptonProcessor(),
                                       executor = processor.dask_executor,
