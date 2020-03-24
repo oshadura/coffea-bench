@@ -41,24 +41,14 @@ from coffea import hist
 from coffea.analysis_objects import JaggedCandidateArray
 import coffea.processor as processor
 
-from dask.distributed import Client
+from dask.distributed import Client, LocalCluster
+from dask_jobqueue import HTCondorCluster
 
 fileset = {
     'Jets': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
              'treename': 'Events'
             }
 }
-
-client = Client("t3.unl.edu:8786")
-cachestrategy = 'dask-worker'
-
-exe_args = {
-        'client': client,
-        'nano': True,
-        'cachestrategy': cachestrategy,
-        'savemetrics': True,
-        'worker_affinity': True if cachestrategy is not None else False,
-    }
 
 # This program plots an event-level variable (in this case, MET, but switching it is as easy as a dict-key change). It also demonstrates an easy use of the book-keeping cutflow tool, to keep track of the number of events processed.
 # The processor class bundles our data analysis together while giving us some helpful tools.  It also leaves looping and chunks to the framework instead of us.
@@ -98,7 +88,21 @@ class METProcessor(processor.ProcessorABC):
         return accumulator
 
 def coffea_dask_adl_example1():
-    output = processor.run_dask_job(fileset,
+    # Dask settings (two different cases)
+    #client = Client("t3.unl.edu:8786")
+    cluster = HTCondorCluster(cores=2, memory="2GB",disk="1GB",dashboard_address=9998)
+    cluster.scale(jobs=64)
+    client = Client(cluster)
+    cachestrategy = 'dask-worker'
+    exe_args = {
+        'client': client,
+        'nano': True,
+        'cachestrategy': cachestrategy,
+        'savemetrics': True,
+        'worker_affinity': True if cachestrategy is not None else False,
+    }
+
+    output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = METProcessor(),
                                       executor = processor.dask_executor,
