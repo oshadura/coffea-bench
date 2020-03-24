@@ -49,17 +49,6 @@ fileset = {
             }
 }
 
-client = Client("t3.unl.edu:8786")
-cachestrategy = 'dask-worker'
-
-exe_args = {
-        'client': client,
-        'nano': True,
-        'cachestrategy': cachestrategy,
-        'savemetrics': True,
-        'worker_affinity': True if cachestrategy is not None else False,
-    }
-
 # This program will plot the MET for events which have an opposite-sign muon pair that has mass in the range of 60-120 GeV.
 class METMuonProcessor(processor.ProcessorABC):
     def __init__(self):

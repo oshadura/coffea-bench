@@ -52,17 +52,6 @@ fileset = {
             }
 }
 
-client = Client("t3.unl.edu:8786")
-cachestrategy = 'dask-worker'
-
-exe_args = {
-        'client': client,
-        'nano': True,
-        'cachestrategy': cachestrategy,
-        'savemetrics': True,
-        'worker_affinity': True if cachestrategy is not None else False,
-    }
-
 @nb.njit()
 def trilepton_selection(ee_starts, ee_stops, ee_arg0s, ee_arg1s,
                         mm_starts, mm_stops, mm_arg0s, mm_arg1s,
@@ -277,7 +266,8 @@ def coffea_dask_adl_example8():
                                       executor = processor.dask_executor,
                                       executor_args = exe_args
                                       
-    )  
+    )
+    return output 
 
 @pytest.mark.benchmark(group="coffea-dask-adl-example8")
 def test_coffea_dask_adl_example8(benchmark):

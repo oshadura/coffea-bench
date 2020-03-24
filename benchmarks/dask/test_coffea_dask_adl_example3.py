@@ -50,17 +50,6 @@ fileset = {
             }
 }
 
-client = Client("t3.unl.edu:8786")
-cachestrategy = 'dask-worker'
-
-exe_args = {
-        'client': client,
-        'nano': True,
-        'cachestrategy': cachestrategy,
-        'savemetrics': True,
-        'worker_affinity': True if cachestrategy is not None else False,
-    }
-
 # This program plots a per-event array (jet_pt) that has been masked to meet certain conditions (in this case, abs(jet eta) < 1).
 class JetProcessor(processor.ProcessorABC):
     def __init__(self):

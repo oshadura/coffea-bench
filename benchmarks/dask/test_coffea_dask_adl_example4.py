@@ -49,17 +49,6 @@ fileset = {
             }
 }
 
-client = Client("t3.unl.edu:8786")
-cachestrategy = 'dask-worker'
-
-exe_args = {
-        'client': client,
-        'nano': True,
-        'cachestrategy': cachestrategy,
-        'savemetrics': True,
-        'worker_affinity': True if cachestrategy is not None else False,
-    }
-
 class JetMETProcessor(processor.ProcessorABC):
     def __init__(self):
         self._columns = ['MET_pt', 'nJet', 'Jet_pt', 'Jet_eta', 'Jet_phi', 'Jet_mass']
