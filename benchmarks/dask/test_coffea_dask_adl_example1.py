@@ -108,7 +108,8 @@ def coffea_dask_adl_example1():
                                       executor = processor.dask_executor,
                                       executor_args = exe_args
                                       
-    ) 
+    )
+    return output 
 
 @pytest.mark.benchmark(group="coffea-dask-adl-example1")
 def test_coffea_dask_adl_example1(benchmark):

@@ -92,13 +92,27 @@ class JetProcessor(processor.ProcessorABC):
         return accumulator
 
 def coffea_dask_adl_example2():
+    # Dask settings (two different cases)
+    #client = Client("t3.unl.edu:8786")
+    cluster = HTCondorCluster(cores=2, memory="2GB",disk="1GB",dashboard_address=9998)
+    cluster.scale(jobs=64)
+    client = Client(cluster)
+    cachestrategy = 'dask-worker'
+    exe_args = {
+        'client': client,
+        'nano': True,
+        'cachestrategy': cachestrategy,
+        'savemetrics': True,
+        'worker_affinity': True if cachestrategy is not None else False,
+    }
     output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = JetProcessor(),
                                       executor = processor.dask_executor,
                                       executor_args = exe_args
                                       
-    ) 
+    )
+    return output  
 
 @pytest.mark.benchmark(group="coffea-dask-adl-example2")
 def test_coffea_dask_adl_example2(benchmark):
