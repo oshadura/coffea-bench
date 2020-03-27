@@ -17,13 +17,6 @@
 # !pip install --user --upgrade ipytest
 # !pip install --user --upgrade pytest-benchmark
 
-# spark.jars.packages doesnt work with Spark 2.4 with kubernetes
-# !wget -N https://repo1.maven.org/maven2/edu/vanderbilt/accre/laurelin/1.0.0/laurelin-1.0.0.jar
-# !wget -N https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.11.2/log4j-api-2.11.2.jar
-# !wget -N https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.11.2/log4j-core-2.11.2.jar
-# !wget -N https://repo1.maven.org/maven2/org/lz4/lz4-java/1.5.1/lz4-java-1.5.1.jar
-# !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
-
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
     import ipytest

@@ -17,13 +17,6 @@
 # !pip install --user --upgrade ipytest
 # !pip install --user --upgrade pytest-benchmark
 
-# spark.jars.packages doesnt work with Spark 2.4 with kubernetes
-# !wget -N https://repo1.maven.org/maven2/edu/vanderbilt/accre/laurelin/1.0.0/laurelin-1.0.0.jar
-# !wget -N https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.11.2/log4j-api-2.11.2.jar
-# !wget -N https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.11.2/log4j-core-2.11.2.jar
-# !wget -N https://repo1.maven.org/maven2/org/lz4/lz4-java/1.5.1/lz4-java-1.5.1.jar
-# !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
-
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
     import ipytest
@@ -246,9 +239,9 @@ class DibosonProcessor(processor.ProcessorABC):
     def postprocess(self, accumulator):
         return accumulator
 
-def test_dask_adl_example8(benchmark):
+def test_dask_adlexample8(benchmark):
     @benchmark
-    def dask_adl_example8(n_cores=2):
+    def dask_adlexample8(n_cores=2):
         # Dask settings (two different cases)
         client = Client("t3.unl.edu:8786")
         #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
