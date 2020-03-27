@@ -87,31 +87,29 @@ class METProcessor(processor.ProcessorABC):
     def postprocess(self, accumulator):
         return accumulator
 
-def test_daskadl_example1(benchmark):
+def test_dask_adlexample1(benchmark):
     @benchmark
-    def daskadl_example1(n_cores=2):
-      # Dask settings (two different cases)
-      client = Client("t3.unl.edu:8786")
-      #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
-      #cluster.scale(jobs=5)
-      #client = Client(cluster)
-      cachestrategy = 'dask-worker'
-      exe_args = {
-        'client': client,
-        'nano': True,
-        'cachestrategy': cachestrategy,
-        'savemetrics': True,
-        'worker_affinity': True if cachestrategy is not None else False,
-      }
-
-      output = processor.run_uproot_job(fileset,
+    def dask_adlexample1(n_cores=2):
+        # Dask settings (two different cases)
+        client = Client("t3.unl.edu:8786")
+        #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
+        #cluster.scale(jobs=5)
+        #client = Client(cluster)
+        cachestrategy = 'dask-worker'
+        exe_args = {
+            'client': client,
+            'nano': True,
+            'cachestrategy': cachestrategy,
+            'savemetrics': True,
+            'worker_affinity': True if cachestrategy is not None else False,
+        }
+        output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = METProcessor(),
                                       executor = processor.dask_executor,
                                       executor_args = exe_args
-                                      
-      )
-      return output 
+                                      )
+        return output 
 
 if hasattr(__builtins__,'__IPYTHON__'):
     ipytest.run('-qq')

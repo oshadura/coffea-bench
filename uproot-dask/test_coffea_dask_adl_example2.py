@@ -80,32 +80,29 @@ class JetProcessor(processor.ProcessorABC):
     def postprocess(self, accumulator):
         return accumulator
 
-def coffea_dask_adl_example2():
-    # Dask settings (two different cases)
-    #client = Client("t3.unl.edu:8786")
-    cluster = HTCondorCluster(cores=2, memory="2GB",disk="1GB",dashboard_address=9998)
-    cluster.scale(jobs=64)
-    client = Client(cluster)
-    cachestrategy = 'dask-worker'
-    exe_args = {
-        'client': client,
-        'nano': True,
-        'cachestrategy': cachestrategy,
-        'savemetrics': True,
-        'worker_affinity': True if cachestrategy is not None else False,
-    }
-    output = processor.run_uproot_job(fileset,
+def test_dask_adlexample2(benchmark):
+    @benchmark
+    def dask_adlexample2():
+        # Dask settings (two different cases)
+        client = Client("t3.unl.edu:8786")
+        #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
+        #cluster.scale(jobs=5)
+        #client = Client(cluster)
+        cachestrategy = 'dask-worker'
+        exe_args = {
+            'client': client,
+            'nano': True,
+            'cachestrategy': cachestrategy,
+            'savemetrics': True,
+            'worker_affinity': True if cachestrategy is not None else False,
+        }
+        output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = JetProcessor(),
                                       executor = processor.dask_executor,
-                                      executor_args = exe_args
-                                      
-    )
-    return output  
-
-@pytest.mark.benchmark(group="coffea-dask-adl-example2")
-def test_coffea_dask_adl_example2(benchmark):
-    benchmark(coffea_dask_adl_example2)
+                                      executor_args = exe_args                                 
+        )
+        return output  
 
 if hasattr(__builtins__,'__IPYTHON__'):
     ipytest.run('-qq')
