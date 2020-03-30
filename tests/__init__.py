@@ -1,0 +1,15 @@
+from __future__ import absolute_import
+from __future__ import print_function
+
+
+import tests.test_coffea_adl_example1
+import tests.test_coffea_adl_example2
+import tests.test_coffea_adl_example3
+import tests.test_coffea_adl_example4
+import tests.test_coffea_adl_example5
+import tests.test_coffea_adl_example6
+import tests.test_coffea_adl_example7
+import tests.test_coffea_adl_example8
+import tests.test_coffea_dimuon_analysis
+import tests.test_coffea_laurelin_simple_func
+import tests.test_pyspark_laurelin_trees
