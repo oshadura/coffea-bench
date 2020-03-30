@@ -16,7 +16,7 @@
 # Preparation for testing
 # !pip install --user --upgrade ipytest
 # !pip install --user --upgrade pytest-benchmark
-# !pip install --user --upgrade pytest-csv
+
 
 # spark.jars.packages doesnt work with Spark 2.4 with kubernetes
 # !wget -N https://repo1.maven.org/maven2/edu/vanderbilt/accre/laurelin/1.0.0/laurelin-1.0.0.jar
@@ -25,30 +25,36 @@
 # !wget -N https://repo1.maven.org/maven2/org/lz4/lz4-java/1.5.1/lz4-java-1.5.1.jar
 # !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
 
+
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
     import ipytest
     ipytest.config(rewrite_asserts=True, magics=True)
-    __file__ = 'test_coffea_laurelin_adl_example6.ipynb'
+    __file__ = 'test_coffea_dask_adl_example1.ipynb'
     # Run this cell before establishing spark connection <<<<< IMPORTANT
     os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':' + '/usr/local/lib/python3.6/site-packages'
     os.environ['PATH'] = os.environ['PATH'] + ':' + '/eos/user/o/oshadura/.local/bin'
 
+
 import psutil
 import pytest
-
-import pyspark.sql
-from pyarrow.compat import guid
+import os
 
 from coffea import hist
 from coffea.analysis_objects import JaggedCandidateArray
 import coffea.processor as processor
-from coffea.processor.spark.detail import _spark_initialize, _spark_stop
-from coffea.processor.spark.spark_executor import spark_executor
 
-import numpy as np
+if 'PYSPARK_COFFEABENCH' in os.environ:
+    import pyspark.sql
+    from pyarrow.compat import guid
+    from coffea.processor.spark.detail import _spark_initialize, _spark_stop
+    from coffea.processor.spark.spark_executor import spark_executor
 
 available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
+
+if 'DASK_COFFEABENCH' in os.environ:
+    from dask.distributed import Client, LocalCluster
+    from dask_jobqueue import HTCondorCluster
 
 fileset = {
     'Trijets': { 'files': ['root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root'],
@@ -119,6 +125,33 @@ class TrijetProcessor(processor.ProcessorABC):
     def postprocess(self, accumulator):
         return accumulator
 
+if 'DASK_COFFEABENCH' in os.environ:
+    def test_dask_adlexample6(benchmark):
+        @benchmark
+        def dask_adlexample6(n_cores=2):
+            # Dask settings (two different cases)
+            client = Client("t3.unl.edu:8786")
+            #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
+            #cluster.scale(jobs=5)
+            #client = Client(cluster)
+            cachestrategy = 'dask-worker'
+            exe_args = {
+                'client': client,
+                'nano': True,
+                'cachestrategy': cachestrategy,
+                'savemetrics': True,
+                'worker_affinity': True if cachestrategy is not None else False,
+            }
+            output = processor.run_uproot_job(fileset,
+                                      treename = 'Events',
+                                      processor_instance = TrijetProcessor(),
+                                      executor = processor.dask_executor,
+                                      executor_args = exe_args
+                                      
+            )
+            return output
+    
+
 def coffea_laurelin_adl_example6(laurelin_version, n_workers, partition_size):
     spark_config = pyspark.sql.SparkSession.builder \
         .appName('spark-executor-test-%s' % guid()) \
@@ -142,12 +175,34 @@ def coffea_laurelin_adl_example6(laurelin_version, n_workers, partition_size):
                                      thread_workers=n_workers,
                                      executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
 
-@pytest.mark.benchmark(group="coffea-laurelin-adl-example6")
-@pytest.mark.parametrize("laurelin_version", available_laurelin_version)
-@pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
-@pytest.mark.parametrize("partition_size", range(100000,200000,100000))
-def test_coffea_laurelin_adl_example6(benchmark, laurelin_version, n_workers, partition_size):
-    benchmark(coffea_laurelin_adl_example6, available_laurelin_version, n_workers, partition_size)
+if 'PYSPARK_COFFEABENCH' in os.environ:
+    @pytest.mark.benchmark(group="coffea-laurelin-adl-example6")
+    @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
+    @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
+    @pytest.mark.parametrize("partition_size", range(100000,200000,100000))
+    def test_coffea_laurelin_adl_example6(benchmark, laurelin_version, n_workers, partition_size):
+        benchmark(coffea_laurelin_adl_example6, available_laurelin_version, n_workers, partition_size)
+    
+
+def coffea_uproot_adl_example6(n_workers, chunk_size, maxchunk_size):
+    output = processor.run_uproot_job(fileset,
+                                      treename = 'Events',
+                                      processor_instance = TrijetProcessor(),
+                                      executor = processor.futures_executor,
+                                      chunksize = chunk_size,
+                                      maxchunks = maxchunk_size,
+                                      executor_args = {'workers': n_workers}
+                                      
+    ) 
+
+if 'UPROOT_COFFEABENCH' in os.environ:
+    @pytest.mark.benchmark(group="coffea-uproot-adl-example6")
+    @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
+    @pytest.mark.parametrize("chunk_size", range(200000,600000,200000))
+    @pytest.mark.parametrize("maxchunk_size", range(300000,700000,200000))
+    def test_coffea_uproot_adl_example6(benchmark, n_workers, chunk_size, maxchunk_size):
+        benchmark(coffea_uproot_adl_example6, n_workers, chunk_size, maxchunk_size)
+    
 
 if hasattr(__builtins__,'__IPYTHON__'):
     ipytest.run('-qq')
