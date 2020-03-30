@@ -117,7 +117,7 @@ class JetProcessor(processor.ProcessorABC):
 if 'DASK_COFFEABENCH' in os.environ:
     def test_dask_adlexample3(benchmark):
         @benchmark
-        def dask_adlexample3():
+        def dask_adlexample3(n_cores=2):
             # Dask settings (two different cases)
             client = Client("t3.unl.edu:8786")
             #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)

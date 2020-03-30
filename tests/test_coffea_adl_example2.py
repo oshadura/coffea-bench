@@ -121,13 +121,13 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
     @pytest.mark.parametrize("partition_size", range(100000,200000,100000))
-    def test_coffea_laurelin_adl_example2(benchmark, laurelin_version, n_workers, partition_size):
-        benchmark(coffea_laurelin_adl_example2, available_laurelin_version, n_workers, partition_size)
+    def test_coffea_laurelin_adlexample2(benchmark, laurelin_version, n_workers, partition_size):
+        benchmark(coffea_laurelin_adlexample2, available_laurelin_version, n_workers, partition_size)
 
 if 'DASK_COFFEABENCH' in os.environ:
     def test_dask_adlexample2(benchmark):
         @benchmark
-        def dask_adlexample2():
+        def coffea_dask_adlexample2(n_cores=2):
             # Dask settings (two different cases)
             client = Client("t3.unl.edu:8786")
             #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
@@ -149,7 +149,7 @@ if 'DASK_COFFEABENCH' in os.environ:
             )
             return output  
 
-def coffea_uproot_adl_example2(n_workers, chunk_size, maxchunk_size):
+def coffea_uproot_adlexample2(n_workers, chunk_size, maxchunk_size):
     output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = JetProcessor(),
@@ -164,8 +164,8 @@ if 'UPROOT_COFFEABENCH' in os.environ:
     @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
     @pytest.mark.parametrize("chunk_size", range(200000,600000,200000))
     @pytest.mark.parametrize("maxchunk_size", range(300000,700000,200000))
-    def test_coffea_uproot_adl_example2(benchmark, n_workers, chunk_size, maxchunk_size):
-        benchmark(coffea_uproot_adl_example2, n_workers, chunk_size, maxchunk_size)
+    def test_uproot_adlexample2(benchmark, n_workers, chunk_size, maxchunk_size):
+        benchmark(coffea_uproot_adlexample2, n_workers, chunk_size, maxchunk_size)
 
 if hasattr(__builtins__,'__IPYTHON__'):
     ipytest.run('-qq')

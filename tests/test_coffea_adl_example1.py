@@ -99,33 +99,34 @@ class METProcessor(processor.ProcessorABC):
         return accumulator
 
 
+def coffea_dask_adlexample1(n_cores=2):
+    # Dask settings (two different cases)
+    client = Client("t3.unl.edu:8786")
+    #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
+    #cluster.scale(jobs=5)
+    #client = Client(cluster)
+    cachestrategy = 'dask-worker'
+    exe_args = {
+        'client': client,
+        'nano': True,
+        'cachestrategy': cachestrategy,
+        'savemetrics': True,
+        'worker_affinity': True if cachestrategy is not None else False,
+    }
+    output = processor.run_uproot_job(fileset,
+                                treename = 'Events',
+                                processor_instance = METProcessor(),
+                                executor = processor.dask_executor,
+                                executor_args = exe_args
+                                )
+    return output
+    
 if 'DASK_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="coffea-dask-adl-example1")
     def test_dask_adlexample1(benchmark):
-        @benchmark
-        def dask_adlexample1(n_cores=2):
-            # Dask settings (two different cases)
-            client = Client("t3.unl.edu:8786")
-            #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
-            #cluster.scale(jobs=5)
-            #client = Client(cluster)
-            cachestrategy = 'dask-worker'
-            exe_args = {
-                'client': client,
-                'nano': True,
-                'cachestrategy': cachestrategy,
-                'savemetrics': True,
-                'worker_affinity': True if cachestrategy is not None else False,
-            }
-            output = processor.run_uproot_job(fileset,
-                                      treename = 'Events',
-                                      processor_instance = METProcessor(),
-                                      executor = processor.dask_executor,
-                                      executor_args = exe_args
-                                      )
-            return output
-
-def coffea_laurelin_adl_example1(laurelin_version, n_workers, partition_size):
+        benchmark(coffea_dask_adlexample1, n_workers, partition_size) 
+            
+def coffea_laurelin_adlexample1(laurelin_version, n_workers, partition_size):
     spark_config = pyspark.sql.SparkSession.builder \
         .appName('spark-executor-test-%s' % guid()) \
         .master('local[*]') \
@@ -154,19 +155,19 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
     @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
     @pytest.mark.parametrize("partition_size", range(100000,200000,100000))
     def test_laurelin_adlexample1(benchmark, laurelin_version, n_workers, partition_size):
-        benchmark(coffea_laurelin_adl_example1, available_laurelin_version, n_workers, partition_size)
+        benchmark(coffea_laurelin_adlexample1, available_laurelin_version, n_workers, partition_size)
 
 
-def coffea_uproot_adl_example1(n_workers, chunk_size, maxchunk_size):
+def coffea_uproot_adlexample1(n_workers, chunk_size, maxchunk_size):
     output = processor.run_uproot_job(fileset,
                                       treename = 'Events',
                                       processor_instance = METProcessor(),
                                       executor = processor.futures_executor,
                                       chunksize = chunk_size,
                                       maxchunks = maxchunk_size,
-                                      executor_args = {'workers': n_workers}
-                                      
-    ) 
+                                      executor_args = {'workers': n_workers}                               
+    )
+    return output  
 
 if 'UPROOT_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="coffea-uproot-adl-example1")
@@ -174,7 +175,7 @@ if 'UPROOT_COFFEABENCH' in os.environ:
     @pytest.mark.parametrize("chunk_size", range(200000,600000,200000))
     @pytest.mark.parametrize("maxchunk_size", range(300000,700000,200000))
     def test_uproot_adlexample1(benchmark, n_workers, chunk_size, maxchunk_size):
-        benchmark(coffea_uproot_adl_example1, n_workers, chunk_size, maxchunk_size)
+        benchmark(coffea_uproot_adlexample1, n_workers, chunk_size, maxchunk_size)
 
 
 if hasattr(__builtins__,'__IPYTHON__'):
