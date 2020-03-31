@@ -46,7 +46,7 @@ if hasattr(__builtins__,'__IPYTHON__'):
 import pytest
 import os
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     import pyspark.sql
     from pyarrow.compat import guid
     from pyspark.sql.types import BinaryType, StringType, StructType, StructField
@@ -59,7 +59,7 @@ from coffea.analysis_objects import JaggedCandidateArray
 import coffea.processor as processor
 from coffea.processor.test_items import NanoTestProcessor
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and 'PYSPARK_COFFEABENCH' in os.environ:
     from coffea.processor.spark.detail import (_spark_initialize,
                                            _spark_make_dfs,
                                            _spark_stop)
@@ -183,33 +183,33 @@ def laurelin_simple_test(laurelin_version, file):
     pds = histdf.toPandas()
     print(pds)
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="laurelin-simple-startup")
     def test_spark_session_startup(benchmark):
         benchmark(spark_session_startup)
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)
     def test_laurelin_read_loading(benchmark, laurelin_version):
         benchmark(laurelin_read_loading, laurelin_version, fileset)
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)
     def test_laurelin_read_select(benchmark, laurelin_version):
         benchmark(laurelin_read_select, laurelin_version, fileset)
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)
     def test_laurelin_read_show(benchmark, laurelin_version):
         benchmark(laurelin_read_show, laurelin_version, fileset)
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)

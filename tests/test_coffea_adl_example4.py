@@ -16,10 +16,11 @@
 # Preparation for testing
 # !pip install --user --upgrade ipytest
 # !pip install --user --upgrade pytest-benchmark
+
 # For single-machine scheduler:
 # https://docs.dask.org/en/latest/setup.html
 # https://docs.dask.org/en/latest/setup/single-machine.html
-# ! pip install --user dask distributed --upgrade
+# ! pip install --user dask distributed dask-jobqueue blosc --upgrade
 
 # Uncomment this if you want to test Dask on UNL HTCCondor:  %env DASK_COFFEABENCH_SETUP="unl-htccondor"
 # Uncomment this if you want to test Dask on UNL Tier3: %env DASK_COFFEABENCH_SETUP="unl-tier3"
@@ -56,7 +57,7 @@ from coffea import hist
 from coffea.analysis_objects import JaggedCandidateArray
 import coffea.processor as processor
 
-if os.environ["PYSPARK_COFFEABENCH"] == '1':
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     import pyspark.sql
     from pyarrow.compat import guid
     from coffea.processor.spark.detail import _spark_initialize, _spark_stop
@@ -64,7 +65,7 @@ if os.environ["PYSPARK_COFFEABENCH"] == '1':
 
 available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.0")]
 
-if os.environ["DASK_COFFEABENCH"] == '1':
+if 'DASK_COFFEABENCH' in os.environ and os.environ["DASK_COFFEABENCH"] == '1':
     from dask.distributed import Client, LocalCluster
     from dask_jobqueue import HTCondorCluster
 

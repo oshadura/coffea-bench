@@ -48,7 +48,7 @@ import os
 import glob
 import re
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     import pyspark.sql
 
 
@@ -84,7 +84,7 @@ def laurelin_read_simple_flat_tree(laurelin_version, file):
             .load(files)
     df.printSchema()
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="laurelin-simple-root-tree")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", files)
