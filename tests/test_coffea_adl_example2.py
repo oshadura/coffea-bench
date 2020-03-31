@@ -17,6 +17,16 @@
 # !pip install --user --upgrade ipytest
 # !pip install --user --upgrade pytest-benchmark
 
+# For single-machine scheduler:
+# https://docs.dask.org/en/latest/setup.html
+# https://docs.dask.org/en/latest/setup/single-machine.html
+# ! pip install --user dask distributed --upgrade
+
+# Uncomment this if you want to test Dask on UNL HTCCondor:  %env DASK_COFFEABENCH_SETUP="unl-htccondor"
+# Uncomment this if you want to test Dask on UNL Tier3: %env DASK_COFFEABENCH_SETUP="unl-tier3"
+# Uncomment this if you want to test Dask locally:  %env DASK_COFFEABENCH_SETUP="local"
+# %env
+
 # spark.jars.packages doesnt work with Spark 2.4 with kubernetes
 # !wget -N https://repo1.maven.org/maven2/edu/vanderbilt/accre/laurelin/1.0.0/laurelin-1.0.0.jar
 # !wget -N https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.11.2/log4j-api-2.11.2.jar
@@ -25,14 +35,10 @@
 # !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
 
 
-# Uncomment this if you want to test Dask:
-# # %env DASK_COFFEABENCH=1
-
-# Uncomment this if you want to test Spark:
-# # %env PYSPARK_COFFEABENCH=1
-
-# Uncomment this if you want to test uproot:
-# # %env UPROOT_COFFEABENCH=1
+# Uncomment this if you want to test Dask:  %env DASK_COFFEABENCH=1
+# Uncomment this if you want to test Spark: %env PYSPARK_COFFEABENCH=1
+# Uncomment this if you want to test uproot:  %env UPROOT_COFFEABENCH=1
+# %env
 
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
@@ -52,7 +58,7 @@ from coffea import hist
 from coffea.analysis_objects import JaggedCandidateArray
 import coffea.processor as processor
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if os.environ["PYSPARK_COFFEABENCH"] == '1':
     import pyspark.sql
     from pyarrow.compat import guid
     from coffea.processor.spark.detail import _spark_initialize, _spark_stop
@@ -60,7 +66,8 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
 
 available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.0")]
 
-if 'DASK_COFFEABENCH' in os.environ:
+
+if os.environ["DASK_COFFEABENCH"] == '1':
     from dask.distributed import Client, LocalCluster
     from dask_jobqueue import HTCondorCluster
 
@@ -122,26 +129,30 @@ def coffea_laurelin_adl_example2(laurelin_version, n_workers, partition_size):
                                      spark_executor,
                                      spark=spark,
                                      partitionsize=partition_size,
-                                     thread_workers=tn_workers,
+                                     thread_workers=n_workers,
                                      executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
 
-if 'PYSPARK_COFFEABENCH' in os.environ:
+if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="coffea-laurelin-adl-example2")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
-    @pytest.mark.parametrize("partition_size", range(100000,200000,100000))
+    @pytest.mark.parametrize("partition_size", range(200000,500000,200000))
     def test_coffea_laurelin_adlexample2(benchmark, laurelin_version, n_workers, partition_size):
-        benchmark(coffea_laurelin_adlexample2, available_laurelin_version, n_workers, partition_size)
+        benchmark(coffea_laurelin_adl_example2, available_laurelin_version, n_workers, partition_size)
 
-if 'DASK_COFFEABENCH' in os.environ:
+if 'DASK_COFFEABENCH' in os.environ and os.environ["DASK_COFFEABENCH"] == '1':
     def test_dask_adlexample2(benchmark):
         @benchmark
         def coffea_dask_adlexample2(n_cores=2):
-            # Dask settings (two different cases)
-            client = Client("t3.unl.edu:8786")
-            #cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
-            #cluster.scale(jobs=5)
-            #client = Client(cluster)
+        # Dask settings (three different cases)
+            if os.environ["DASK_COFFEABENCH_SETUP"] == 'unl-tier3':
+                client = Client("t3.unl.edu:8786")
+            if os.environ["DASK_COFFEABENCH_SETUP"] == 'unl-htccondor':
+                cluster = HTCondorCluster(cores=n_cores, memory="2GB",disk="1GB",dashboard_address=9998)
+                cluster.scale(jobs=5)
+                client = Client(cluster)
+            if os.environ["DASK_COFFEABENCH_SETUP"] == 'local':
+                client = Client()
             cachestrategy = 'dask-worker'
             exe_args = {
                 'client': client,
@@ -168,11 +179,11 @@ def coffea_uproot_adlexample2(n_workers, chunk_size, maxchunk_size):
                                       executor_args = {'workers': n_workers}                                   
     ) 
 
-if 'UPROOT_COFFEABENCH' in os.environ:
+if 'UPROOT_COFFEABENCH' in os.environ and os.environ["UPROOT_COFFEABENCH"] == '1':
     @pytest.mark.benchmark(group="coffea-uproot-adl-example2")
     @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
-    @pytest.mark.parametrize("chunk_size", range(200000,400000,200000))
-    @pytest.mark.parametrize("maxchunk_size", range(300000,500000,200000))
+    @pytest.mark.parametrize("chunk_size", range(200000,500000,200000))
+    @pytest.mark.parametrize("maxchunk_size", range(300000,600000,200000))
     def test_uproot_adlexample2(benchmark, n_workers, chunk_size, maxchunk_size):
         benchmark(coffea_uproot_adlexample2, n_workers, chunk_size, maxchunk_size)
 
