@@ -24,12 +24,21 @@
 # !wget -N https://repo1.maven.org/maven2/org/lz4/lz4-java/1.5.1/lz4-java-1.5.1.jar
 # !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
 
+# Uncomment this if you want to test Dask:
+# # %env DASK_COFFEABENCH=1
+
+# Uncomment this if you want to test Spark:
+# # %env PYSPARK_COFFEABENCH=1
+
+# Uncomment this if you want to test uproot:
+# # %env UPROOT_COFFEABENCH=1
+
 
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
     import ipytest
     ipytest.config(rewrite_asserts=True, magics=True)
-    __file__ = 'test_coffea_dask_adl_example1.ipynb'
+    __file__ = 'test_coffea_adl_example1.ipynb'
     # Run this cell before establishing spark connection <<<<< IMPORTANT
     os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':' + '/usr/local/lib/python3.6/site-packages'
     os.environ['PATH'] = os.environ['PATH'] + ':' + '/eos/user/o/oshadura/.local/bin'
@@ -172,8 +181,8 @@ def coffea_uproot_adlexample1(n_workers, chunk_size, maxchunk_size):
 if 'UPROOT_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="coffea-uproot-adl-example1")
     @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
-    @pytest.mark.parametrize("chunk_size", range(200000,600000,200000))
-    @pytest.mark.parametrize("maxchunk_size", range(300000,700000,200000))
+    @pytest.mark.parametrize("chunk_size", range(200000,400000,200000))
+    @pytest.mark.parametrize("maxchunk_size", range(300000,500000,200000))
     def test_uproot_adlexample1(benchmark, n_workers, chunk_size, maxchunk_size):
         benchmark(coffea_uproot_adlexample1, n_workers, chunk_size, maxchunk_size)
 

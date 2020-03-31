@@ -25,6 +25,15 @@
 # !wget -N https://repo1.maven.org/maven2/org/lz4/lz4-java/1.5.1/lz4-java-1.5.1.jar
 # !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
 
+# Uncomment this if you want to test Dask:
+# # %env DASK_COFFEABENCH=1
+
+# Uncomment this if you want to test Spark:
+# # %env PYSPARK_COFFEABENCH=1
+
+# Uncomment this if you want to test uproot:
+# # %env UPROOT_COFFEABENCH=1
+
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
     import ipytest
@@ -44,7 +53,8 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
 
 
 files = [f for f in glob.glob("samples/*.root")]
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
+
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.0")]
 
 class RegexSwitch(object):
   def __init__(self):

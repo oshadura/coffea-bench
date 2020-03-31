@@ -31,12 +31,20 @@
 # !wget -N https://repo1.maven.org/maven2/org/lz4/lz4-java/1.5.1/lz4-java-1.5.1.jar
 # !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
 
+# Uncomment this if you want to test Dask:
+# # %env DASK_COFFEABENCH=1
+
+# Uncomment this if you want to test Spark:
+# # %env PYSPARK_COFFEABENCH=1
+
+# Uncomment this if you want to test uproot:
+# # %env UPROOT_COFFEABENCH=1
 
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
     import ipytest
     ipytest.config(rewrite_asserts=True, magics=True)
-    __file__ = 'test_coffea_dask_adl_example1.ipynb'
+    __file__ = 'test_coffea_adl_example7.ipynb'
     # Run this cell before establishing spark connection <<<<< IMPORTANT
     os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':' + '/usr/local/lib/python3.6/site-packages'
     os.environ['PATH'] = os.environ['PATH'] + ':' + '/eos/user/o/oshadura/.local/bin'
@@ -56,7 +64,7 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
     from coffea.processor.spark.detail import _spark_initialize, _spark_stop
     from coffea.processor.spark.spark_executor import spark_executor
 
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.0")]
 
 if 'DASK_COFFEABENCH' in os.environ:
     from dask.distributed import Client, LocalCluster
@@ -230,8 +238,8 @@ def coffea_uproot_adl_example7(n_workers, chunk_size, maxchunk_size):
 if 'UPROOT_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="coffea-uproot-adl-example7")
     @pytest.mark.parametrize("n_workers", range(1,psutil.cpu_count(logical=False)))
-    @pytest.mark.parametrize("chunk_size", range(200000,600000,200000))
-    @pytest.mark.parametrize("maxchunk_size", range(300000,700000,200000))
+    @pytest.mark.parametrize("chunk_size", range(200000,400000,200000))
+    @pytest.mark.parametrize("maxchunk_size", range(300000,500000,200000))
     def test_coffea_uproot_adl_example7(benchmark, n_workers, chunk_size, maxchunk_size):
         benchmark(coffea_uproot_adl_example7, n_workers, chunk_size, maxchunk_size)
 

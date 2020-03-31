@@ -25,6 +25,15 @@
 # !wget -N https://repo1.maven.org/maven2/org/lz4/lz4-java/1.5.1/lz4-java-1.5.1.jar
 # !wget -N https://repo1.maven.org/maven2/org/tukaani/xz/1.2/xz-1.2.jar
 
+# Uncomment this if you want to test Dask:
+# # %env DASK_COFFEABENCH=1
+
+# Uncomment this if you want to test Spark:
+# # %env PYSPARK_COFFEABENCH=1
+
+# Uncomment this if you want to test uproot:
+# # %env UPROOT_COFFEABENCH=1
+
 if hasattr(__builtins__,'__IPYTHON__'):
     import os
     import ipytest
@@ -62,7 +71,7 @@ partitionsize = 200000
 # parameters to be changed
 thread_workers = 4
 # parameters to be changed
-available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
+available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.0")]
 
 fileset = {
     'test': { 'files': ['root://eosuser//eos/user/o/oshadura/coffea/nano_lgray.root'],
