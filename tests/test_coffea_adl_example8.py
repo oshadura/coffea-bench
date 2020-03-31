@@ -20,7 +20,7 @@
 # For single-machine scheduler:
 # https://docs.dask.org/en/latest/setup.html
 # https://docs.dask.org/en/latest/setup/single-machine.html
-# ! pip install --user dask distributed dask-jobqueue blosc --upgrade
+# ! pip install --user dask distributed dask-jobqueue blosc --upgrades
 
 # Uncomment this if you want to test Dask on UNL HTCCondor:  %env DASK_COFFEABENCH_SETUP="unl-htccondor"
 # Uncomment this if you want to test Dask on UNL Tier3: %env DASK_COFFEABENCH_SETUP="unl-tier3"
@@ -312,6 +312,7 @@ def coffea_laurelin_adl_example8(laurelin_version, n_workers, partition_size):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', partition_size)\
         .config('spark.kubernetes.container.image.pullPolicy', 'true')\
         .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
         .config('spark.kubernetes.memoryOverheadFactor', '0.1')
     spark = _spark_initialize(config=spark_config, log_level='WARN', 
                           spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')  

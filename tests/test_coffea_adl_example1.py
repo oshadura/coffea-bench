@@ -155,6 +155,7 @@ def coffea_laurelin_adlexample1(laurelin_version, n_workers, partition_size):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', partition_size)\
         .config('spark.kubernetes.container.image.pullPolicy', 'true')\
         .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
         .config('spark.kubernetes.memoryOverheadFactor', '0.1')
 
     spark = _spark_initialize(config=spark_config, log_level='WARN',

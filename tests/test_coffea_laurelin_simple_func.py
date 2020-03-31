@@ -89,6 +89,7 @@ def spark_session_startup(laurelin_version):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize) \
         .config('spark.kubernetes.container.image.pullPolicy', 'true') \
         .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin') \
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
         .config('spark.kubernetes.memoryOverheadFactor', '0.1')
         
     spark_session = _spark_initialize(config=spark_config,
@@ -106,6 +107,7 @@ def laurelin_read_loading(laurelin_version, file):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
         .config('spark.kubernetes.container.image.pullPolicy', 'true')\
         .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
         .config('spark.kubernetes.memoryOverheadFactor', '0.1')     
     spark_session = _spark_initialize(config=spark_config,
                                       log_level='WARN', 
@@ -127,6 +129,7 @@ def laurelin_read_select(laurelin_version, file):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
         .config('spark.kubernetes.container.image.pullPolicy', 'true')\
         .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
         .config('spark.kubernetes.memoryOverheadFactor', '0.1')        
     spark_session = _spark_initialize(config=spark_config, log_level='WARN', 
                           spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
@@ -145,6 +148,7 @@ def laurelin_read_show(laurelin_version, file):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
         .config('spark.kubernetes.container.image.pullPolicy', 'true')\
         .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
         .config('spark.kubernetes.memoryOverheadFactor', '0.1')      
     spark_session = _spark_initialize(config=spark_config,
                                       log_level='WARN', 
@@ -165,6 +169,7 @@ def laurelin_simple_test(laurelin_version, file):
         .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
         .config('spark.kubernetes.container.image.pullPolicy', 'true')\
         .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
+        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
         .config('spark.kubernetes.memoryOverheadFactor', '0.1')
         
     spark_session = _spark_initialize(config=spark_config,
