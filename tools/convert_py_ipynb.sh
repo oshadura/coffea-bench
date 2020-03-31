@@ -1,4 +1,6 @@
-#/usr/bin/bash
+#!/usr/bin/bash
 
-jupytext --to notebook benchmarks/*/*.py
-jupytext --set-formats ipynb,py benchmarks/*/*.py
+# To be used from coffea-bench/:
+# as a requirement install jupytext via pip.
+jupytext --to notebook tests/*.py
+jupytext --set-formats ipynb,py tests/*.py

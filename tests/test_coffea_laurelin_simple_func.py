@@ -42,7 +42,7 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
     from pyarrow.compat import guid
     from pyspark.sql.types import BinaryType, StringType, StructType, StructField
     import pyspark.sql.functions as fn
-       
+
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from coffea import hist
@@ -178,7 +178,7 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="laurelin-simple-startup")
     def test_spark_session_startup(benchmark):
         benchmark(spark_session_startup)
-    
+
 if 'PYSPARK_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)

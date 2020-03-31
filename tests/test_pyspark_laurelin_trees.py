@@ -41,7 +41,7 @@ import re
 
 if 'PYSPARK_COFFEABENCH' in os.environ:
     import pyspark.sql
-    
+
 
 files = [f for f in glob.glob("samples/*.root")]
 available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.1-SNAPSHOT")]
