@@ -120,12 +120,12 @@ def coffea_dask_adlexample1(n_cores=2):
                                 executor_args = exe_args
                                 )
     return output
-    
+
 if 'DASK_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="coffea-dask-adl-example1")
     def test_dask_adlexample1(benchmark):
         benchmark(coffea_dask_adlexample1, n_workers, partition_size) 
-            
+
 def coffea_laurelin_adlexample1(laurelin_version, n_workers, partition_size):
     spark_config = pyspark.sql.SparkSession.builder \
         .appName('spark-executor-test-%s' % guid()) \

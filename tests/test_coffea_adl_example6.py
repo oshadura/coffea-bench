@@ -150,7 +150,7 @@ if 'DASK_COFFEABENCH' in os.environ:
                                       
             )
             return output
-    
+
 
 def coffea_laurelin_adl_example6(laurelin_version, n_workers, partition_size):
     spark_config = pyspark.sql.SparkSession.builder \
@@ -182,7 +182,7 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
     @pytest.mark.parametrize("partition_size", range(100000,200000,100000))
     def test_coffea_laurelin_adl_example6(benchmark, laurelin_version, n_workers, partition_size):
         benchmark(coffea_laurelin_adl_example6, available_laurelin_version, n_workers, partition_size)
-    
+
 
 def coffea_uproot_adl_example6(n_workers, chunk_size, maxchunk_size):
     output = processor.run_uproot_job(fileset,
@@ -202,7 +202,7 @@ if 'UPROOT_COFFEABENCH' in os.environ:
     @pytest.mark.parametrize("maxchunk_size", range(300000,700000,200000))
     def test_coffea_uproot_adl_example6(benchmark, n_workers, chunk_size, maxchunk_size):
         benchmark(coffea_uproot_adl_example6, n_workers, chunk_size, maxchunk_size)
-    
+
 
 if hasattr(__builtins__,'__IPYTHON__'):
     ipytest.run('-qq')

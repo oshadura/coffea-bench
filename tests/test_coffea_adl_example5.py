@@ -112,7 +112,7 @@ class METMuonProcessor(processor.ProcessorABC):
 
     def postprocess(self, accumulator):
         return accumulator
-    
+
 def coffea_laurelin_dimuon_analysis(laurelin_version, n_workers, partition_size):
         spark_config = pyspark.sql.SparkSession.builder \
         .appName('spark-executor-test-%s' % guid()) \
@@ -167,7 +167,7 @@ if 'DASK_COFFEABENCH' in os.environ:
                                       
             )
             return output
-    
+
 def coffea_uproot_adl_example5(n_workers, chunk_size, maxchunk_size):
     output = processor.run_uproot_job(fileset,
                                       treename = 'Events',

@@ -130,8 +130,8 @@ if 'DASK_COFFEABENCH' in os.environ:
                                       
             )
             return output
-    
-    
+
+
 def coffea_laurelin_dimuon_analysis(laurelin_version, n_workers, partition_size):
         spark_config = pyspark.sql.SparkSession.builder \
         .appName('spark-executor-test-%s' % guid()) \
@@ -160,7 +160,7 @@ if 'PYSPARK_COFFEABENCH' in os.environ:
     @pytest.mark.parametrize("partition_size", range(100000,200000,100000))
     def test_coffea_laurelin_dimuon_analysis(benchmark, laurelin_version, n_workers, partition_size):
         benchmark(coffea_laurelin_dimuon_analysis, available_laurelin_version, n_workers, partition_size)
-    
+
 
 def coffea_uproot_dimuon_analysis(n_workers, chunk_size, maxchunk_size):
     output = processor.run_uproot_job(fileset,

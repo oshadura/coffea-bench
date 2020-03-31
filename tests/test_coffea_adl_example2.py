@@ -92,7 +92,7 @@ class JetProcessor(processor.ProcessorABC):
 
     def postprocess(self, accumulator):
         return accumulator
-    
+
 def coffea_laurelin_adl_example2(laurelin_version, n_workers, partition_size):
     spark_config = pyspark.sql.SparkSession.builder \
         .appName('spark-executor-test-%s' % guid()) \
@@ -115,7 +115,7 @@ def coffea_laurelin_adl_example2(laurelin_version, n_workers, partition_size):
                                      partitionsize=partition_size,
                                      thread_workers=tn_workers,
                                      executor_args={'file_type': 'edu.vanderbilt.accre.laurelin.Root', 'cache': False})
-    
+
 if 'PYSPARK_COFFEABENCH' in os.environ:
     @pytest.mark.benchmark(group="coffea-laurelin-adl-example2")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
