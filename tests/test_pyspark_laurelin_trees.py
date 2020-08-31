@@ -34,21 +34,24 @@
 # Uncomment this if you want to test uproot:
 # # %env UPROOT_COFFEABENCH=1
 
-if hasattr(__builtins__,'__IPYTHON__'):
+if hasattr(__builtins__, "__IPYTHON__"):
     import os
     import ipytest
+
     ipytest.config(rewrite_asserts=True, magics=True)
-    __file__ = 'test_pyspark_laurelin_trees.ipynb'
+    __file__ = "test_pyspark_laurelin_trees.ipynb"
     # Run this cell before establishing spark connection <<<<< IMPORTANT
-    os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':' + '/usr/local/lib/python3.6/site-packages'
-    os.environ['PATH'] = os.environ['PATH'] + ':' + '/eos/user/o/oshadura/.local/bin'
+    os.environ["PYTHONPATH"] = (
+        os.environ["PYTHONPATH"] + ":" + "/usr/local/lib/python3.6/site-packages"
+    )
+    os.environ["PATH"] = os.environ["PATH"] + ":" + "/eos/user/o/oshadura/.local/bin"
 
 import pytest
 import os
 import glob
 import re
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
     import pyspark.sql
 
 
@@ -56,40 +59,50 @@ files = [f for f in glob.glob("samples/*.root")]
 
 available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.0")]
 
+
 class RegexSwitch(object):
-  def __init__(self):
-    self.last_match = None
-  def match(self,pattern,text):
-    self.last_match = re.match(pattern,text)
-    return self.last_match
-  def search(self,pattern,text):
-    self.last_match = re.search(pattern,text)
-    return self.last_match
+    def __init__(self):
+        self.last_match = None
+
+    def match(self, pattern, text):
+        self.last_match = re.match(pattern, text)
+        return self.last_match
+
+    def search(self, pattern, text):
+        self.last_match = re.search(pattern, text)
+        return self.last_match
+
 
 def laurelin_read_simple_flat_tree(laurelin_version, file):
     gre = RegexSwitch()
-    spark = pyspark.sql.SparkSession.builder \
-        .master("local[1]") \
-        .config('spark.jars.packages', laurelin_version) \
+    spark = (
+        pyspark.sql.SparkSession.builder.master("local[1]")
+        .config("spark.jars.packages", laurelin_version)
         .getOrCreate()
+    )
     sc = spark.sparkContext
-    if gre.match(r'sample',file):
+    if gre.match(r"sample", file):
         treename = "sample"
-    elif gre.match(r'HZZ-objects',file) or gre.match(r'Zmumu',file):
+    elif gre.match(r"HZZ-objects", file) or gre.match(r"Zmumu", file):
         treename = "events"
     else:
         treename = "tree"
-    df = spark.read.format('edu.vanderbilt.accre.laurelin.Root') \
-            .option("tree", treename) \
-            .load(files)
+    df = (
+        spark.read.format("edu.vanderbilt.accre.laurelin.Root")
+        .option("tree", treename)
+        .load(files)
+    )
     df.printSchema()
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
+
     @pytest.mark.benchmark(group="laurelin-simple-root-tree")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", files)
     def test_laurelin_read_simple_flat_tree(benchmark, laurelin_version, root_file):
         benchmark(laurelin_read_simple_flat_tree, laurelin_version, root_file)
 
-if hasattr(__builtins__,'__IPYTHON__'):
-    ipytest.run('-qq')
+
+if hasattr(__builtins__, "__IPYTHON__"):
+    ipytest.run("-qq")

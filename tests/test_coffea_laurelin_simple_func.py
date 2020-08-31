@@ -34,19 +34,23 @@
 # Uncomment this if you want to test uproot:
 # # %env UPROOT_COFFEABENCH=1
 
-if hasattr(__builtins__,'__IPYTHON__'):
-    import os
-    import ipytest
-    ipytest.config(rewrite_asserts=True, magics=True)
-    __file__ = 'test_coffea_laurelin_simple_func.ipynb'
-    # Run this cell before establishing spark connection <<<<< IMPORTANT
-    os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':' + '/usr/local/lib/python3.6/site-packages'
-    os.environ['PATH'] = os.environ['PATH'] + ':' + '/eos/user/o/oshadura/.local/bin'
-
 import pytest
 import os
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+if hasattr(__builtins__, "__IPYTHON__"):
+    import os
+    import ipytest
+
+    ipytest.config(rewrite_asserts=True, magics=True)
+    __file__ = "test_coffea_laurelin_simple_func.ipynb"
+    # Run this cell before establishing spark connection <<<<< IMPORTANT
+    os.environ["PYTHONPATH"] = (
+        os.environ["PYTHONPATH"] + ":" + "/usr/local/lib/python3.6/site-packages"
+    )
+    os.environ["PATH"] = os.environ["PATH"] + ":" + "/eos/user/o/oshadura/.local/bin"
+
+
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
     import pyspark.sql
     from pyarrow.compat import guid
     from pyspark.sql.types import BinaryType, StringType, StructType, StructField
@@ -59,10 +63,12 @@ from coffea.analysis_objects import JaggedCandidateArray
 import coffea.processor as processor
 from coffea.processor.test_items import NanoTestProcessor
 
-if 'PYSPARK_COFFEABENCH' in os.environ and 'PYSPARK_COFFEABENCH' in os.environ:
-    from coffea.processor.spark.detail import (_spark_initialize,
-                                           _spark_make_dfs,
-                                           _spark_stop)
+if "PYSPARK_COFFEABENCH" in os.environ and "PYSPARK_COFFEABENCH" in os.environ:
+    from coffea.processor.spark.detail import (
+        _spark_initialize,
+        _spark_make_dfs,
+        _spark_stop,
+    )
     from coffea.processor.spark.spark_executor import spark_executor
     from coffea.processor import run_spark_job
 
@@ -74,152 +80,221 @@ thread_workers = 4
 available_laurelin_version = [("edu.vanderbilt.accre:laurelin:1.0.0")]
 
 fileset = {
-    'test': { 'files': ['root://eosuser//eos/user/o/oshadura/coffea/nano_lgray.root'],
-             'treename': 'Events'
-            }
+    "test": {
+        "files": ["root://eosuser//eos/user/o/oshadura/coffea/nano_lgray.root"],
+        "treename": "Events",
+    }
 }
 
+
 def spark_session_startup(laurelin_version):
-    spark_config = pyspark.sql.SparkSession.builder \
-        .appName('spark-executor-test-%s' % guid()) \
-        .master('local[*]') \
-        .config('spark.driver.memory', '4g') \
-        .config('spark.executor.memory', '6g') \
-        .config('spark.sql.execution.arrow.enabled','true') \
-        .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize) \
-        .config('spark.kubernetes.container.image.pullPolicy', 'true') \
-        .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin') \
-        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
-        .config('spark.kubernetes.memoryOverheadFactor', '0.1')
-        
-    spark_session = _spark_initialize(config=spark_config,
-                                      log_level='WARN', 
-                                      spark_progress=False,
-                                      laurelin_version=laurelin_version)
+    spark_config = (
+        pyspark.sql.SparkSession.builder.appName("spark-executor-test-%s" % guid())
+        .master("local[*]")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "6g")
+        .config("spark.sql.execution.arrow.enabled", "true")
+        .config("spark.sql.execution.arrow.maxRecordsPerBatch", partitionsize)
+        .config("spark.kubernetes.container.image.pullPolicy", "true")
+        .config(
+            "spark.kubernetes.container.image",
+            "gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin",
+        )
+        .config(
+            "spark.driver.extraClassPath",
+            "./laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar",
+        )
+        .config("spark.kubernetes.memoryOverheadFactor", "0.1")
+    )
+
+    spark_session = _spark_initialize(
+        config=spark_config,
+        log_level="WARN",
+        spark_progress=False,
+        laurelin_version=laurelin_version,
+    )
+
 
 def laurelin_read_loading(laurelin_version, file):
-    spark_config = pyspark.sql.SparkSession.builder \
-        .appName('spark-executor-test-%s' % guid()) \
-        .master('local[*]') \
-        .config('spark.driver.memory', '4g') \
-        .config('spark.executor.memory', '6g') \
-        .config('spark.sql.execution.arrow.enabled','true') \
-        .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
-        .config('spark.kubernetes.container.image.pullPolicy', 'true')\
-        .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
-        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
-        .config('spark.kubernetes.memoryOverheadFactor', '0.1')     
-    spark_session = _spark_initialize(config=spark_config,
-                                      log_level='WARN', 
-                                      spark_progress=False,
-                                      laurelin_version=laurelin_version)
-    df = spark_session.read.format('edu.vanderbilt.accre.laurelin.Root') \
-            .option("tree", "Events") \
-            .load(file['test'])
+    spark_config = (
+        pyspark.sql.SparkSession.builder.appName("spark-executor-test-%s" % guid())
+        .master("local[*]")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "6g")
+        .config("spark.sql.execution.arrow.enabled", "true")
+        .config("spark.sql.execution.arrow.maxRecordsPerBatch", partitionsize)
+        .config("spark.kubernetes.container.image.pullPolicy", "true")
+        .config(
+            "spark.kubernetes.container.image",
+            "gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin",
+        )
+        .config(
+            "spark.driver.extraClassPath",
+            "./laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar",
+        )
+        .config("spark.kubernetes.memoryOverheadFactor", "0.1")
+    )
+    spark_session = _spark_initialize(
+        config=spark_config,
+        log_level="WARN",
+        spark_progress=False,
+        laurelin_version=laurelin_version,
+    )
+    df = (
+        spark_session.read.format("edu.vanderbilt.accre.laurelin.Root")
+        .option("tree", "Events")
+        .load(file["test"])
+    )
     df.printSchema()
     return df
 
+
 def laurelin_read_select(laurelin_version, file):
-    spark_config = pyspark.sql.SparkSession.builder \
-        .appName('spark-executor-test-%s' % guid()) \
-        .master('local[*]') \
-        .config('spark.driver.memory', '4g') \
-        .config('spark.executor.memory', '6g') \
-        .config('spark.sql.execution.arrow.enabled','true') \
-        .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
-        .config('spark.kubernetes.container.image.pullPolicy', 'true')\
-        .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
-        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
-        .config('spark.kubernetes.memoryOverheadFactor', '0.1')        
-    spark_session = _spark_initialize(config=spark_config, log_level='WARN', 
-                          spark_progress=False, laurelin_version='1.0.1-SNAPSHOT')
+    spark_config = (
+        pyspark.sql.SparkSession.builder.appName("spark-executor-test-%s" % guid())
+        .master("local[*]")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "6g")
+        .config("spark.sql.execution.arrow.enabled", "true")
+        .config("spark.sql.execution.arrow.maxRecordsPerBatch", partitionsize)
+        .config("spark.kubernetes.container.image.pullPolicy", "true")
+        .config(
+            "spark.kubernetes.container.image",
+            "gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin",
+        )
+        .config(
+            "spark.driver.extraClassPath",
+            "./laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar",
+        )
+        .config("spark.kubernetes.memoryOverheadFactor", "0.1")
+    )
+    spark_session = _spark_initialize(
+        config=spark_config,
+        log_level="WARN",
+        spark_progress=False,
+        laurelin_version="1.0.1-SNAPSHOT",
+    )
     return spark_session
     df = laurelin_read_loading(laurelin_version, file)
-    df_final = df.select(*['nMuon','Muon_pt','Muon_eta','Muon_phi','Muon_mass'])
+    df_final = df.select(*["nMuon", "Muon_pt", "Muon_eta", "Muon_phi", "Muon_mass"])
     df_final.printSchema()
+
 
 def laurelin_read_show(laurelin_version, file):
-    spark_config = pyspark.sql.SparkSession.builder \
-        .appName('spark-executor-test-%s' % guid()) \
-        .master('local[*]') \
-        .config('spark.driver.memory', '4g') \
-        .config('spark.executor.memory', '6g') \
-        .config('spark.sql.execution.arrow.enabled','true') \
-        .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
-        .config('spark.kubernetes.container.image.pullPolicy', 'true')\
-        .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
-        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
-        .config('spark.kubernetes.memoryOverheadFactor', '0.1')      
-    spark_session = _spark_initialize(config=spark_config,
-                                      log_level='WARN', 
-                                      spark_progress=False,
-                                      laurelin_version=laurelin_version)
+    spark_config = (
+        pyspark.sql.SparkSession.builder.appName("spark-executor-test-%s" % guid())
+        .master("local[*]")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "6g")
+        .config("spark.sql.execution.arrow.enabled", "true")
+        .config("spark.sql.execution.arrow.maxRecordsPerBatch", partitionsize)
+        .config("spark.kubernetes.container.image.pullPolicy", "true")
+        .config(
+            "spark.kubernetes.container.image",
+            "gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin",
+        )
+        .config(
+            "spark.driver.extraClassPath",
+            "./laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar",
+        )
+        .config("spark.kubernetes.memoryOverheadFactor", "0.1")
+    )
+    spark_session = _spark_initialize(
+        config=spark_config,
+        log_level="WARN",
+        spark_progress=False,
+        laurelin_version=laurelin_version,
+    )
 
     df = laurelin_read_loading(laurelin_version, file)
-    df_final = df.withColumn('dataset', fn.lit('test'))
+    df_final = df.withColumn("dataset", fn.lit("test"))
     df_final.printSchema()
 
+
 def laurelin_simple_test(laurelin_version, file):
-    spark_config = pyspark.sql.SparkSession.builder \
-        .appName('spark-executor-test-%s' % guid()) \
-        .master('local[*]') \
-        .config('spark.driver.memory', '4g') \
-        .config('spark.executor.memory', '6g') \
-        .config('spark.sql.execution.arrow.enabled','true') \
-        .config('spark.sql.execution.arrow.maxRecordsPerBatch', partitionsize)\
-        .config('spark.kubernetes.container.image.pullPolicy', 'true')\
-        .config('spark.kubernetes.container.image', 'gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin')\
-        .config('spark.driver.extraClassPath', './laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar')\
-        .config('spark.kubernetes.memoryOverheadFactor', '0.1')
-        
-    spark_session = _spark_initialize(config=spark_config,
-                                      log_level='WARN', 
-                                      spark_progress=False,
-                                      laurelin_version=laurelin_version)
+    spark_config = (
+        pyspark.sql.SparkSession.builder.appName("spark-executor-test-%s" % guid())
+        .master("local[*]")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "6g")
+        .config("spark.sql.execution.arrow.enabled", "true")
+        .config("spark.sql.execution.arrow.maxRecordsPerBatch", partitionsize)
+        .config("spark.kubernetes.container.image.pullPolicy", "true")
+        .config(
+            "spark.kubernetes.container.image",
+            "gitlab-registry.cern.ch/db/spark-service/docker-registry/swan:laurelin",
+        )
+        .config(
+            "spark.driver.extraClassPath",
+            "./laurelin-1.0.0.jar:./lz4-java-1.5.1.jar:./log4j-core-2.11.2.jar:./log4j-api-2.11.2.jar:./xz-1.2.jar",
+        )
+        .config("spark.kubernetes.memoryOverheadFactor", "0.1")
+    )
+
+    spark_session = _spark_initialize(
+        config=spark_config,
+        log_level="WARN",
+        spark_progress=False,
+        laurelin_version=laurelin_version,
+    )
     df = laurelin_read_loading(laurelin_version, file)
-    env = Environment(loader=PackageLoader('coffea.processor','templates'),autoescape=select_autoescape(['py']))
-    columns = ['nMuon','Muon_pt','Muon_eta','Muon_phi','Muon_mass']
-    cols_w_ds = ['dataset','nMuon','Muon_pt','Muon_eta','Muon_phi','Muon_mass']
+    env = Environment(
+        loader=PackageLoader("coffea.processor", "templates"),
+        autoescape=select_autoescape(["py"]),
+    )
+    columns = ["nMuon", "Muon_pt", "Muon_eta", "Muon_phi", "Muon_mass"]
+    cols_w_ds = ["dataset", "nMuon", "Muon_pt", "Muon_eta", "Muon_phi", "Muon_mass"]
     processor_instance = NanoTestProcessor(columns=columns)
-    tmpl = env.get_template('spark.py.tmpl')
+    tmpl = env.get_template("spark.py.tmpl")
     render = tmpl.render(cols=columns)
     exec(render)
-    histdf = df.select(coffea_udf(*cols_w_ds).alias('histos'))
+    histdf = df.select(coffea_udf(*cols_w_ds).alias("histos"))
     pds = histdf.toPandas()
     print(pds)
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
+
     @pytest.mark.benchmark(group="laurelin-simple-startup")
     def test_spark_session_startup(benchmark):
         benchmark(spark_session_startup)
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
+
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)
     def test_laurelin_read_loading(benchmark, laurelin_version):
         benchmark(laurelin_read_loading, laurelin_version, fileset)
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
+
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)
     def test_laurelin_read_select(benchmark, laurelin_version):
         benchmark(laurelin_read_select, laurelin_version, fileset)
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
+
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)
     def test_laurelin_read_show(benchmark, laurelin_version):
         benchmark(laurelin_read_show, laurelin_version, fileset)
 
-if 'PYSPARK_COFFEABENCH' in os.environ and os.environ["PYSPARK_COFFEABENCH"] == '1':
+
+if "PYSPARK_COFFEABENCH" in os.environ and os.environ["PYSPARK_COFFEABENCH"] == "1":
+
     @pytest.mark.benchmark(group="laurelin-simple-func")
     @pytest.mark.parametrize("laurelin_version", available_laurelin_version)
     @pytest.mark.parametrize("root_file", fileset)
     def test_laurelin_simple_test(benchmark, laurelin_version):
         benchmark(laurelin_simple_test, laurelin_version, fileset)
 
-if hasattr(__builtins__,'__IPYTHON__'):
-    ipytest.run('-qq')
+
+if hasattr(__builtins__, "__IPYTHON__"):
+    ipytest.run("-qq")
