@@ -10,12 +10,12 @@ from setuptools import setup
 
 setup(name='coffea-bench',
       version='0.1',
-      description='Benchmarks for Coffea and Laurelin',
+      description='Benchmarks for Coffea',
       author='Oksana Shadura',
       author_email='oksana.shadura@cern.ch',
       url='https://github.com/oshadura/coffea-bench',
-      install_requires=['coffea','pyspark','numpy','numba','awkward','uproot'],
-      tests_require=['psutil','pytest','pytest-benchmark','pytest-csv','pytest-benchmark[histogram]','jinja2','pyarrow'],
+      install_requires=['coffea', 'dask', 'distributed', 'dask_jobqueue'],
+      tests_require=['nbmake','pytest','pytest-benchmark','pytest-csv','pytest-benchmark[histogram]'],
       setup_requires=['pytest-runner'],
       test_suite = "tests",
 )
