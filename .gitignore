@@ -1,7 +1,6 @@
 # Benchmark artefacts
-tools/*.json
-tools/*.csv
-tools/*.svg
+tests/*.json
+tests/*.csv
 
 benchmarks/__pycache__/
 
